@@ -58,7 +58,7 @@ class Instagrab():
 
         while True:
             for item in media['items']:
-                if item['videos']:
+                if 'videos' in item:
                     medium = 'videos'
                 else:
                     medium = 'images'
