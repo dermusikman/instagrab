@@ -4,30 +4,19 @@ import re
 import json
 
 class Instagrab():
-    def __init__(self, target=None):
-        self.verbose = True
-        # Should I scrap this and force target in download()?
-        if self.__is_good_target(target):
-            if re.match('^\w$', target):
-                self.__target = __url_from_username(target)
-            else:
-                self.__target = target
-        else:
-            self.__target = None
-
-    def __is_good_target(self, target):
-        if target and type(target).__name__ == 'str':
-            if re.match('\w', target):
-                # username
-                return True
-            elif self.__is_good_url(target):
-                return True
-        else:
-            return False
+    def __init__(self, verbose=True):
+        self.verbose = verbose
 
     def __is_good_url(self, url):
         url_regex = '(https?://)?(www\.)?instagram.com/\w(/)?'
         if re.match(url_regex, url):
+            return True
+        else:
+            return False
+
+    def __is_good_username(self, username):
+        username_regex = '^[A-Za-z0-9_-]*$'
+        if re.match(username_regex, username):
             return True
         else:
             return False
@@ -52,21 +41,18 @@ class Instagrab():
         clean_url = re.search(file_re, url).group()
         return Path(clean_url).name
 
-    def download(self, target=None):
+    def download(self, target):
         """Download media from instagram account"""
-        #XXX A lot of this is duplicated in __init__()
-        #  Should probably isolate the logic better
-        #  Maybe strip a default target?
-        if not target and self.__target:
-            # Use initialized target
-            url = self.__target
-        elif re.match('\w', str(target)):
-            # Target is a username
-            url = self.__url_from_username(target)
-        elif self.__is_good_url(str(target)):
-            url = target
+        if type(target).__name__ == 'str':
+            if self.__is_good_username(target):
+                # Target is a username
+                url = self.__url_from_username(target)
+            elif self.__is_good_url(str(target)):
+                url = target
+            else:
+                raise("Invalid URL or Instagram username: " + target)
         else:
-            raise("Invalid URL or Instagram username: " + str(target))
+            raise("In download(t), 't' must be a 'str'")
 
         media = json.loads(self.__get_json(url))
 
