@@ -1,11 +1,20 @@
-import urllib.request as urlreq
-from pathlib import Path
 import re
 import json
+import urllib.request as urlreq
+from pathlib import Path
+from random import random
+from time import sleep
+
+# TODO: Allow clobber?
+# TODO: Handle HTTP errors and the like more gracefully
 
 class Instagrab():
     def __init__(self, verbose=True):
         self.verbose = verbose
+        self.random_wait_multiplier = 1.0
+
+    def __wait(self):
+        sleep(self.random_wait_multiplier * random())
 
     def __is_good_url(self, url):
         url_regex = '(https?://)?(www\.)?instagram.com/\w(/)?'
@@ -70,6 +79,7 @@ class Instagrab():
                 if not Path(item_name).exists():
                     if self.verbose == True:
                         print("Downloading... " + item_name)
+                    self.__wait()
                     f = open(item_name, "wb")
                     f.write(self.__get_binary(item_url))
                     f.close()
