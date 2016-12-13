@@ -89,3 +89,17 @@ class Instagrab():
 
             if not media or not media['items']:
                 break
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(
+        description="Grab images and video from an Instagram account.",
+        epilog="NB: Random wait is necessary to prevent Instagram from blocking us. It's also polite.")
+    parser.add_argument('username', metavar='U', type=str, help="Username of account from which to grab media")
+    parser.add_argument('-w', '--wait', metavar='S', type=float, help="Random wait multiplier in seconds", default=1.0)
+    parser.add_argument('-v', '--verbose', action='store_true')
+    args = parser.parse_args()
+    i = Instagrab()
+    i.random_wait_multiplier = args.wait
+    i.verbose = args.verbose
+    i.download(args.username)
