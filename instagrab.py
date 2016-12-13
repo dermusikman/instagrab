@@ -13,6 +13,7 @@ class Instagrab():
     def __init__(self, verbose=True):
         self.verbose = verbose
         self.random_wait_multiplier = 1.0
+        self.no_video = False
 
     def __wait(self):
         sleep(self.random_wait_multiplier * random())
@@ -69,6 +70,8 @@ class Instagrab():
         while True:
             for item in media['items']:
                 if 'videos' in item:
+                    if self.no_video:
+                        continue
                     medium = 'videos'
                 else:
                     medium = 'images'
@@ -98,9 +101,11 @@ if __name__ == '__main__':
         epilog="NB: Random wait is necessary to prevent Instagram from blocking us. It's also polite.")
     parser.add_argument('username', metavar='U', type=str, help="Username of account from which to grab media")
     parser.add_argument('-w', '--wait', metavar='S', type=float, help="Random wait multiplier in seconds", default=1.0)
+    parser.add_argument('-nv', '--novideo', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
     args = parser.parse_args()
     i = Instagrab()
     i.random_wait_multiplier = args.wait
+    i.no_video = args.novideo
     i.verbose = args.verbose
     i.download(args.username)
