@@ -1,5 +1,4 @@
-# instagrab
-Grab images and video from Instagram
+# instagrab - Grab images and video from Instagram
 
 usage: instagrab.py [-h] [-w S] [-nv] [-v] U
 
